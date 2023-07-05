@@ -76,43 +76,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MaterialButton button = (MaterialButton) view;
         String buttonText = button.getText().toString();
 
-        if(buttonText.equals("AC")){
+        if (buttonText.equals("AC")) {
             solutionTV.setText("");
             resultTV.setText("0");
             dataToCalculate = "";
             return;
         }
-        if(buttonText.equals("=")){
+        if (buttonText.equals("=")) {
             solutionTV.setText(resultTV.getText());
             return;
         }
-        if(buttonText.equals("C")){
-            dataToCalculate = dataToCalculate.substring(0,dataToCalculate.length()-1);
-        }
-        else{
-            dataToCalculate = dataToCalculate+buttonText;
+        if (buttonText.equals("C")) {
+            if (!dataToCalculate.isEmpty()) {
+                dataToCalculate = dataToCalculate.substring(0, dataToCalculate.length() - 1);
+                if (dataToCalculate.isEmpty())
+                    resultTV.setText("0");
+            }
+        } else {
+            dataToCalculate = dataToCalculate + buttonText;
         }
         solutionTV.setText(dataToCalculate);
         String finalResult = getResult(dataToCalculate);
 
-        if(!finalResult.equals("Err")){
+        if (!finalResult.equals("Err")) {
             resultTV.setText(finalResult);
         }
-
     }
 
-    String getResult(String data){
-        try{
+
+    String getResult(String data) {
+        try {
             Context context = Context.enter();
             context.setOptimizationLevel(-1);
             Scriptable scriptable = context.initStandardObjects();
-            String finalResult = context.evaluateString(scriptable,data,"Javascript",1,null).toString();
-            if (finalResult.endsWith(".0")){
+            Object evalResult = context.evaluateString(scriptable, data, "Javascript", 1, null);
+            if (evalResult == null || evalResult == Context.getUndefinedValue()) {
+                return "0";
+            }
+            String finalResult = evalResult.toString();
+            if (finalResult.endsWith(".0")) {
                 finalResult = finalResult.replace(".0", "");
             }
-            return finalResult;
-        }
-        catch (Exception e){
+            return finalResult;s
+        } catch (Exception e) {
             return "Err";
         }
     }
