@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (finalResult.endsWith(".0")) {
                 finalResult = finalResult.replace(".0", "");
             }
-            return finalResult;s
+            return finalResult;
         } catch (Exception e) {
             return "Err";
         }
